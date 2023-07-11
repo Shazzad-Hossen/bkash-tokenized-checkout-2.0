@@ -40,19 +40,33 @@ class Base {
     });
   }
 
-  async fetch(endPoint, body) {
-    const headers= endPoint.endsWith('grant') || endPoint.endsWith('refresh')? {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        username: this.username,
-        password: this.password,
-      } : {
-        Authorization: this.id_token,
-        "Content-Type": "application/json",
-        "X-App-Key": this.appKey,
-      }
+  async refreshToken() {
+    const res = await this.fetch("/token/refresh", {
+      app_key: this.appKey,
+      app_secret: this.appSecret,
+      refresh_token: this.refresh_token,
+    });
+    return res;
+  }
 
-    const response = await axios.post(`${this.BASE_URL+endPoint}`, body, {headers});
+  async fetch(endPoint, body) {
+    const headers =
+      endPoint.endsWith("grant") || endPoint.endsWith("refresh")
+        ? {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            username: this.username,
+            password: this.password,
+          }
+        : {
+            Authorization: this.id_token,
+            "Content-Type": "application/json",
+            "X-App-Key": this.appKey,
+          };
+
+    const response = await axios.post(`${this.BASE_URL + endPoint}`, body, {
+      headers,
+    });
     return response.data;
   }
 }

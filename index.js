@@ -8,6 +8,9 @@ const appSecret = process.env.BKASH_APP_SECRET;
 
 (async () => {
   bkash = await new Base(username, password, appKey, appSecret, true).init();
+  
+  const genReftres= await bkash.refreshToken();
+  console.log('Generate refresh Token',genReftres);
 
   const res = await bkash.agreement.createAgreement({
     payerReference: "01770618575",
